@@ -65,10 +65,10 @@
         const token = urlParams.get('code');  // الحصول على التوكن من الرابط
 
         // التأكد من أن التوكن موجود
-        if (!token) {
-            alert('لم يتم العثور على التوكن في الرابط.');
-            window.location.href = 'https://el3wady1.github.io/tas'; // إعادة التوجيه إذا لم يكن هناك توكن
-        }
+        // if (!token) {
+        //     alert('لم يتم العثور على التوكن في الرابط.');
+        //     window.location.href = 'https://el3wady1.github.io/tas'; // إعادة التوجيه إذا لم يكن هناك توكن
+        // }
 
         // استماع للنموذج عند الإرسال
         document.getElementById('reset-form').addEventListener('submit', async (e) => {
