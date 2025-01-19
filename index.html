@@ -64,11 +64,17 @@
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('code');  // الحصول على التوكن من الرابط
 
+        if (token) {
+            // حفظ التوكن في localStorage
+            localStorage.setItem('reset_token', token);
+        }
+
         // التأكد من أن التوكن موجود
-        // if (!token) {
-        //     alert('لم يتم العثور على التوكن في الرابط.');
-        //     window.location.href = 'https://el3wady1.github.io/tas'; // إعادة التوجيه إذا لم يكن هناك توكن
-        // }
+        const savedToken = localStorage.getItem('reset_token');
+        if (!savedToken) {
+            alert('لم يتم العثور على التوكن.');
+            window.location.href = 'https://el3wady1.github.io/tas'; // إعادة التوجيه إذا لم يكن هناك توكن
+        }
 
         // استماع للنموذج عند الإرسال
         document.getElementById('reset-form').addEventListener('submit', async (e) => {
@@ -77,17 +83,15 @@
             const email = document.getElementById('email').value;
             const newPassword = document.getElementById('new-password').value;
 
-            // استخدام التوكن مع واجهة Supabase لإعادة تعيين كلمة المرور
+            // استخدام التوكن من localStorage
             const { data, error } = await supabase.auth.api
-                .updateUserByToken(token, { password: newPassword });
+                .updateUserByToken(savedToken, { password: newPassword });
 
             if (error) {
                 alert('خطأ أثناء تحديث كلمة المرور: ' + error.message);
             } else {
                 alert('تم تحديث كلمة المرور بنجاح!');
-                
-                // إعادة التوجيه مع تضمين التوكن في الرابط بشكل يدوي
-                window.location.href = 'https://el3wady1.github.io/tas/success.html?code=' + token;
+                window.location.href = 'https://el3wady1.github.io/tas/success.html';
             }
         });
     </script>
