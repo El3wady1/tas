@@ -62,7 +62,7 @@
 
         // استلام الرابط الذي يحتوي على التوكن
         const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');  // الحصول على التوكن من الرابط
+        const token = urlParams.get('code');  // الحصول على التوكن من الرابط
 
         // التأكد من أن التوكن موجود
         if (!token) {
@@ -79,13 +79,15 @@
 
             // تحديث كلمة المرور باستخدام التوكن عبر واجهة Supabase
             const { data, error } = await supabase.auth.api
-                .updateUserByToken(token, { password: newPassword });
+                .resetPasswordForEmail(email, { newPassword: newPassword });
 
             if (error) {
                 alert('خطأ أثناء تحديث كلمة المرور: ' + error.message);
             } else {
                 alert('تم تحديث كلمة المرور بنجاح!');
-                window.location.href = 'https://el3wady1.github.io/tas/success.html'; // إعادة التوجيه لصفحة النجاح بعد التحديث
+
+                // إعادة التوجيه مع تضمين التوكن في الرابط
+                window.location.href = 'https://el3wady1.github.io/tas/success.html?code=' + token;
             }
         });
     </script>
