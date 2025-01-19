@@ -77,15 +77,15 @@
             const email = document.getElementById('email').value;
             const newPassword = document.getElementById('new-password').value;
 
-            // تحديث كلمة المرور باستخدام التوكن عبر واجهة Supabase
+            // استخدام التوكن مع واجهة Supabase لإعادة تعيين كلمة المرور
             const { data, error } = await supabase.auth.api
-                .resetPasswordForEmail(email, { newPassword: newPassword });
+                .updateUserByToken(token, { password: newPassword });
 
             if (error) {
                 alert('خطأ أثناء تحديث كلمة المرور: ' + error.message);
             } else {
                 alert('تم تحديث كلمة المرور بنجاح!');
-
+                
                 // إعادة التوجيه مع تضمين التوكن في الرابط
                 window.location.href = 'https://el3wady1.github.io/tas/success.html?code=' + token;
             }
