@@ -61,12 +61,24 @@
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         // استلام الرابط الذي يحتوي على التوكن
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('code');  // الحصول على التوكن من الرابط
+        // Manually parse the query string to get the 'code' parameter
+        const queryString = window.location.search.substring(1); // Remove '?' from the URL
+        const params = queryString.split('&');
+        let token = null;
+
+        params.forEach(param => {
+            const [key, value] = param.split('=');
+            if (key === 'code') {
+                token = value;
+            }
+        });
 
         if (token) {
             // حفظ التوكن في localStorage
             localStorage.setItem('reset_token', token);
+        } else {
+            alert('لم يتم العثور على التوكن.');
+            window.location.href = 'https://el3wady1.github.io/tas'; // إعادة التوجيه إذا لم يكن هناك توكن
         }
 
         // التأكد من أن التوكن موجود
