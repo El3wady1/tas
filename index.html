@@ -48,6 +48,8 @@
     <div class="reset-container">
         <h2>إعادة تعيين كلمة المرور</h2>
         <form id="reset-form">
+            <!-- حقل إدخال التوكن يدويًا -->
+            <input type="text" id="token" placeholder="التوكن" required>
             <input type="text" id="email" placeholder="البريد الإلكتروني" required>
             <input type="password" id="new-password" placeholder="كلمة المرور الجديدة" required>
             <button type="submit">تحديث كلمة المرور</button>
@@ -60,44 +62,22 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6eXJ2bWdpbGxna25sZHByamZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI1MzI4NTksImV4cCI6MjA0ODEwODg1OX0.3GS4Si6pUZGhRGTEDXT1xeSzOI9-Gz5H9XtdIOPBbEE';
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // استلام الرابط الذي يحتوي على التوكن
-        // Manually parse the query string to get the 'code' parameter
-        const queryString = window.location.search.substring(1); // Remove '?' from the URL
-        const params = queryString.split('&');
-        let token = null;
-
-        params.forEach(param => {
-            const [key, value] = param.split('=');
-            if (key === 'code') {
-                token = value;
-            }
-        });
-
-        if (token) {
-            // حفظ التوكن في localStorage
-            localStorage.setItem('reset_token', token);
-        } else {
-            alert('لم يتم العثور على التوكن.');
-            window.location.href = 'https://el3wady1.github.io/tas'; // إعادة التوجيه إذا لم يكن هناك توكن
-        }
-
-        // التأكد من أن التوكن موجود
-        const savedToken = localStorage.getItem('reset_token');
-        if (!savedToken) {
-            alert('لم يتم العثور على التوكن.');
-            window.location.href = 'https://el3wady1.github.io/tas'; // إعادة التوجيه إذا لم يكن هناك توكن
-        }
-
         // استماع للنموذج عند الإرسال
         document.getElementById('reset-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const token = document.getElementById('token').value; // الحصول على التوكن المدخل يدويًا
             const email = document.getElementById('email').value;
             const newPassword = document.getElementById('new-password').value;
 
-            // استخدام التوكن من localStorage
+            // التأكد من أن التوكن موجود
+            if (!token) {
+                alert('يرجى إدخال التوكن.');
+                return;
+            }
+
             const { data, error } = await supabase.auth.api
-                .updateUserByToken(savedToken, { password: newPassword });
+                .updateUserByToken(token, { password: newPassword });
 
             if (error) {
                 alert('خطأ أثناء تحديث كلمة المرور: ' + error.message);
